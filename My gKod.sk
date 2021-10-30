@@ -1,0 +1,94 @@
+__________                _________                             .____     
+\______   \___.__. ___  __\_   ___ \____________ __  _  __ ____ |    |    
+ |    |  _<   |  | \  \/  /    \  \/\_  __ \__  \\ \/ \/ // __ \|    |    
+ |    |   \\___  |  >    <\     \____|  | \// __ \\     /\  ___/|    |___ 
+ |______  // ____| /__/\_ \\______  /|__|  (____  /\/\_/  \___  >_______ \
+        \/ \/            \/       \/            \/            \/        \/
+                  
+Options:
+	admin: xCraweL
+	
+command /mygkod:
+	permission: op
+	trigger:
+		send "&aBY AUTHOR IS XCRAWEL / BERKE Ş."
+		
+command /gkod <offline player>:
+	trigger:
+		if player's display name is "{@admin}":
+			if {gkodsifresi::%arg-1%} is not set:
+				send "&5&lMy gKod &8» &cBulunamadı."
+			else:
+				send "&5&lMy gKod &8» &rKullanıcıya atalı gkod: &a%{gkodsifresi::%arg-1%}%"  
+			
+command /gkodset <offline player> <text>:
+	trigger:
+		if player's display name is "{@admin}":
+			set {gkodsifresi::%arg-1%} to "%arg-2%"
+			wait 1 seconds
+			execute player command "/gkod %arg-1%"
+		
+command /gkodsil <offline player>:
+	trigger:
+		if player's display name is "{@admin}":
+			clear {gkodsifresi::%arg-1%}
+			clear {gkod::%arg-1%}
+			clear {gkodbasarili::%arg-1%}
+			send "&5&lMy gKod &8» &aGkod silindi"
+				
+
+
+on any movement:
+	if {gkodsifresi::%player%} is set:
+		if {gkodbasarili::%player%} is false:
+			send "&5&lMy gKod &8» &rLütfen gkod giriniz."
+			cancel event
+
+on command:
+	if {gkodsifresi::%player%} is set:
+		if {gkodbasarili::%player%} is false:
+			send "&5&lMy gKod &8» &rLütfen gkod giriniz."
+			cancel event
+			
+on break:
+	if {gkodsifresi::%player%} is set:
+		if {gkodbasarili::%player%} is false:
+			send "&5&lMy gKod &8» &rLütfen gkod giriniz."
+			cancel event
+
+on drop:
+	if {gkodsifresi::%player%} is set:
+		if {gkodbasarili::%player%} is false:
+			send "&5&lMy gKod &8» &rLütfen gkod giriniz."
+			cancel event
+			
+	
+on join:
+	if {gkodsifresi::%player%} is set:
+		set {gkod::%player%} to true
+		set {gkodbasarili::%player%} to false
+		send "&5&lMy gKod &8» &rLütfen gkod giriniz."
+	
+
+	
+on chat:
+	if {gkodsifresi::%player%} is set:
+		if {gkod::%player%} is true:
+			if {gkodbasarili::%player%} is false:
+				if message is "%{gkodsifresi::%player%}%":
+					set {gkodbasarili::%player%} to true
+					clear {gkod::%player%}
+					send "&5&lMy gKod &8» &rGüvenlik kodu onaylandı"
+					cancel event
+				else:
+					kick player due to "&cGüvenlik Kodunu Yanlış Girdiniz."
+					cancel event
+					
+	
+
+on join:
+	if {gkodsifresi::%player%} is set:
+	wait 15 seconds
+	if {gkodbasarili::%player%} is false:
+		execute console command "/kick %player% &cGüvenlik Kodunu Girmediniz."
+		
